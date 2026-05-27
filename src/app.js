@@ -7,9 +7,12 @@ app.use("/test", (req, res) => {
 });
 
 app.use("/", (req, res) => {
-    res.send("Welcome to the Dashboard!");
+    res.send("Welcome!");
 });
 
+app.use("/test1", (req, res) => {
+    res.send("Welcome to the Dashboard 1!");
+});
 
 app.listen(7777, () => {
     console.log("Server is successfully listening on port 7777...");
