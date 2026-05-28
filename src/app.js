@@ -2,10 +2,15 @@ const express = require ("express");
 
 const app = express();
 
-// This will only handle GET call to /user
-app.get("/user/:userID/:name/:password", (req, res) => {
-    console.log(req.params)
-    res.send({ firstName: "Sanket", lastName: "Kansal" });
+app.use("/user", (req, res, next)=>{
+    // Route Handler
+    // res.send("Route Handler 1");
+    console.log("Handling the route user!!")
+    next();
+    res.send("Response!!")
+}, (req, res) => {
+    console.log("Handling the route user 2!!")
+    res.send("2nd Response!!")
 });
 
 app.listen(7777, () => {
