@@ -2,19 +2,12 @@ const express = require("express");
 
 const app = express();
 
-//Handle Auth Middleware for all GET, POST, ... requests
-app.use("/admin", (req, res, next) => {
-    console.log("Admin auth is getting checked!!");
-    const token = "xyz";
-    const isAdminAuthorized = token === "xyz";
-    if(!isAdminAuthorized){
-        res.status(401).send("Unauthorized request")
-    }else{
-        next();
-    }
-});
+const {adminAuth, userAuth} = require("./middlewares/auth")
 
-app.get("/user", (req, res) =>{
+//Handle Auth Middleware for all GET, POST, ... requests
+app.use("/admin", adminAuth);
+
+app.get("/user", userAuth, (req, res) =>{
     res.send("User Data Sent");
 });
 
