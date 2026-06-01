@@ -9,13 +9,13 @@ app.use('/', (err, req, res, next) => {
 })
 
 app.get("/getUserData", (req, res) => {
-    // try {
+    try {
     // Logic of db call and get User data
     throw new Error("dnjnd");
     res.send("User Data Sent");
-    // } catch (err) {
-    //     res.status(500).send("Some Error contact support team"); 
-    // }
+    } catch (err) {
+        res.status(500).send("Some Error contact support team"); 
+    }
 });
 
 app.use('/', (err, req, res, next) => {
