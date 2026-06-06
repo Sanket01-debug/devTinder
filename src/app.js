@@ -16,11 +16,16 @@ app.post("/signup", async (req, res) => {
   try {
     await user.save();
     res.send("User added successfully");
-  } catch (error) {
+  } catch (err) {
     res.status(400).send("Error saving the user:"+err.message);
   }
 
 });
+
+app.get("/signup", async(req, res) => {
+  console.log(req.body);
+})
+
 
 
 connectDB()
