@@ -22,10 +22,15 @@ app.post("/signup", async (req, res) => {
 
 });
 
-app.get("/signup", async(req, res) => {
-  console.log(req.body);
-})
+app.get("/signup", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (err) {
+    res.status(400).send("Error fetching users:"+err.message);
+  }
 
+});
 
 
 connectDB()
