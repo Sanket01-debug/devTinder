@@ -15,14 +15,25 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        required: true
+        required: true,
     },
     age:{
-        type: Number
+        type: Number,
     },
     gender:{
-        type: String
-    }
+        type: String,
+    },
+    photoUrl:{
+        type: String,
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVIB43fvbAhv1AZd3UdeZ_CtCXuZ8_F_pHThVrNfpfO5owIIBud92y4rw&s=10",
+    },
+    about:{
+        type: String,
+        default: "This is a default about of the user!",
+    },
+    skills:{
+        type: [String],
+    },
 });
 
 module.exports = mongoose.model("User", userSchema);
