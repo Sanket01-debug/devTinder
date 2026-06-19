@@ -5,8 +5,10 @@ const app = express();
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -58,6 +60,15 @@ app.post("/login", async(req, res) => {
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
+
+})
+
+app.get("/profile", async(req, res) => {
+
+  const cookies = req.cookies;
+
+  console.log(cookies);
+  res.send("Reading Cookie");
 
 })
 
