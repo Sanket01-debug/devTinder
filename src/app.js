@@ -6,6 +6,7 @@ const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -50,8 +51,11 @@ app.post("/login", async(req, res) => {
       
       // Create a JWT Token
 
+      const token = await jwt.sign({ _id: user._id }, "DEV@TINDER$790")
+      console.log(token);
+
       // Add the token to cookie and send the response back to the user
-      res.cookie("token", "kadhfkshvkfafshabsihlvslabihdvfouv");
+      res.cookie("token", token);
       res.send("Login Successful!!!");
     }
     else{
@@ -67,8 +71,18 @@ app.get("/profile", async(req, res) => {
 
   const cookies = req.cookies;
 
-  console.log(cookies);
-  res.send("Reading Cookie");
+  const {token} = cookies;
+  // Validate my token
+
+  const decodedMessage = await jwt.verify(token, "DEV@TINDER$790")
+
+  console.log(decodedMessage);
+  const { _id } = decodedMessage;
+  console.log("Logged In user is: "+ _id);
+
+  const user = await User.findById(_id);
+
+  res.send(user);
 
 })
 
