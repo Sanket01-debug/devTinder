@@ -52,7 +52,6 @@ app.post("/login", async (req, res) => {
       // Create a JWT Token
 
       const token = await jwt.sign({ _id: user._id }, "DEV@TINDER$790")
-      console.log(token);
 
       // Add the token to cookie and send the response back to the user
       res.cookie("token", token);
@@ -79,9 +78,7 @@ app.get("/profile", async (req, res) => {
 
     const decodedMessage = await jwt.verify(token, "DEV@TINDER$790")
 
-    console.log(decodedMessage);
     const { _id } = decodedMessage;
-    console.log("Logged In user is: " + _id);
 
     const user = await User.findById(_id);
     if(!user){
