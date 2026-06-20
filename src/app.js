@@ -35,20 +35,20 @@ app.post("/signup", async (req, res) => {
 
 });
 
-app.post("/login", async(req, res) => {
+app.post("/login", async (req, res) => {
 
   try {
-    const {emailId, password} = req.body;
+    const { emailId, password } = req.body;
 
-    const user = await User.findOne({emailId: emailId});
-    if(!user){
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
       throw new Error("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if(isPasswordValid){
-      
+    if (isPasswordValid) {
+
       // Create a JWT Token
 
       const token = await jwt.sign({ _id: user._id }, "DEV@TINDER$790")
@@ -58,7 +58,7 @@ app.post("/login", async(req, res) => {
       res.cookie("token", token);
       res.send("Login Successful!!!");
     }
-    else{
+    else {
       throw new Error("Password not correct");
     }
   } catch (err) {
@@ -67,22 +67,31 @@ app.post("/login", async(req, res) => {
 
 })
 
-app.get("/profile", async(req, res) => {
+app.get("/profile", async (req, res) => {
 
-  const cookies = req.cookies;
+  try {
+    const cookies = req.cookies;
 
-  const {token} = cookies;
-  // Validate my token
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Invalid Token");
+    }
 
-  const decodedMessage = await jwt.verify(token, "DEV@TINDER$790")
+    const decodedMessage = await jwt.verify(token, "DEV@TINDER$790")
 
-  console.log(decodedMessage);
-  const { _id } = decodedMessage;
-  console.log("Logged In user is: "+ _id);
+    console.log(decodedMessage);
+    const { _id } = decodedMessage;
+    console.log("Logged In user is: " + _id);
 
-  const user = await User.findById(_id);
+    const user = await User.findById(_id);
+    if(!user){
+      throw new Error("User does not exist");
+    }
 
-  res.send(user);
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
 
 })
 
