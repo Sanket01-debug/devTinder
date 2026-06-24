@@ -22,7 +22,20 @@ const validateEditProfileData = (req) => {
 
 }
 
+const validatePasswordEdit = (req) => {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+        throw new Error("Please provide both passwords");
+    }
+
+    if (!validator.isStrongPassword(newPassword)) {
+        throw new Error("Please enter a strong password");
+    }
+};
+
 module.exports = {
     validateSignUpData,
     validateEditProfileData,
+    validatePasswordEdit,
 };
