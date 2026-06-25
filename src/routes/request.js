@@ -27,9 +27,6 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
   }
-
-  res.send(user.firstName + "sent the connection request");
-
-})
+});
 
 module.exports = requestRouter;
