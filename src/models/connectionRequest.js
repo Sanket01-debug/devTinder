@@ -23,6 +23,10 @@ const connectionRequestSchema = new mongoose.Schema({
     { timestamps: true }
 );
 
+// ConnectionRequest.find({fromUserId: 2344256287289652, toUserId: 249240928042332})
+
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
+
 connectionRequestSchema.pre("save", function () {
     const connectionRequest = this;
     // Check if the fromUserId is same as toUserId
@@ -30,6 +34,7 @@ connectionRequestSchema.pre("save", function () {
         throw new Error("Cannot send connection request to yourself!");
     }
 });
+
 
 const ConnectionRequestModel = new mongoose.model(
     "ConnectionRequest",
