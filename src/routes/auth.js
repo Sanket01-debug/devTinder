@@ -30,8 +30,9 @@ authRouter.post("/signup", async (req, res) => {
 
     console.log("USER SAVED:", savedUser.emailId);
 
-    // Send welcome email
-    await sendEmail({
+    // Email delivery must not prevent a saved account from signing in.
+    try {
+      await sendEmail({
       to: emailId,
       subject: "Welcome to DevTinder!",
       html: `
@@ -39,9 +40,10 @@ authRouter.post("/signup", async (req, res) => {
         <p>Your account has been successfully created.</p>
         <p>We are happy to have you on DevTinder.</p>
       `,
-    });
-
-    console.log("EMAIL FUNCTION COMPLETED");
+      });
+    } catch (emailError) {
+      console.error("Welcome email failed:", emailError.message);
+    }
 
     // Generate JWT token
     const token = await savedUser.getJWT();

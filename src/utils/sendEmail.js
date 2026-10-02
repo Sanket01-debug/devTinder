@@ -11,7 +11,7 @@ const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: `<h1>${body}</h1>`,
+          Data: body,
         },
         Text: {
           Charset: "UTF-8",
@@ -31,23 +31,25 @@ const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
 };
 
 const run = async (subject, body, toEmailId) => {
+  // Enable delivery once SES is configured and available.
+  if (process.env.EMAIL_ENABLED !== "true") {
+    return { skipped: true };
+  }
+
   const sendEmailCommand = createSendEmailCommand(
-    "akshaysaini.in@gmail.com",
-    "akshay@devtinder.in",
+    toEmailId,
+    process.env.EMAIL_FROM || "sanketkansal2001@gmail.com",
     subject,
     body
   );
 
-  try {
-    return await sesClient.send(sendEmailCommand);
-  } catch (caught) {
-    if (caught instanceof Error && caught.name === "MessageRejected") {
-      const messageRejectedError = caught;
-      return messageRejectedError;
-    }
-    throw caught;
-  }
+  return await sesClient.send(sendEmailCommand);
 };
 
 // snippet-end:[ses.JavaScript.email.sendEmailV3]
-module.exports = { run };
+const sendEmail = async ({ to, subject, html }) => {
+  return run(subject, html, to);
+};
+
+module.exports = sendEmail;
+module.exports.run = run;

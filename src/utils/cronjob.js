@@ -31,7 +31,8 @@ cron.schedule("0 8 * * *", async () => {
       try {
         const res = await sendEmail.run(
           "New Friend Requests pending for " + email,
-          "Ther eare so many frined reuests pending, please login to DevTinder.in and accept or reject the reqyests."
+          "You have pending friend requests. Please log in to https://devtinder.work to accept or reject them.",
+          email
         );
         console.log(res);
       } catch (err) {
