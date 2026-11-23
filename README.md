@@ -16,6 +16,7 @@ This repository contains the **Express API and Socket.IO server**.
 - Developer discovery with pagination
 - Connection requests with interested, ignored, accepted, and rejected states
 - Real-time chat with messages stored in MongoDB
+- Unlimited 1-to-1 WebRTC video calls between accepted connections, available to free and premium users
 - Silver and Gold memberships through Razorpay
 - Optional welcome emails and pending-request reminders through Amazon SES
 
@@ -70,7 +71,7 @@ Replace the example values with your own configuration.
 | --- | --- |
 | `PORT` | Server port, usually `7777` |
 | `MONGO_URI` | MongoDB connection string |
-| `JWT_SECRET` | JWT authentication secret |
+| `JWT_SECRET` | Secret used for both JWT signing and verification |
 | `RAZORPAY_KEY_ID` | Razorpay key ID |
 | `RAZORPAY_KEY_SECRET` | Razorpay key secret |
 | `RAZORPAY_WEBHOOK_SECRET` | Razorpay webhook secret |
@@ -78,6 +79,10 @@ Replace the example values with your own configuration.
 | `EMAIL_FROM` | SES-verified sender address |
 | `AWS_ACCESS_KEY` | AWS access key used by the email client |
 | `AWS_SECRET_KEY` | AWS secret key used by the email client |
+| `CLIENT_ORIGINS` | Allowed frontend origins for HTTP and Socket.IO |
+| `STUN_URLS` | Comma-separated STUN server URLs |
+| `TURN_URLS`, `TURN_SHARED_SECRET` | TURN REST-compatible relay URLs and backend-only shared secret |
+| `ICE_TRANSPORT_POLICY` | `all` normally; `relay` for TURN validation |
 
 Use Razorpay test credentials for local development. Keep email delivery disabled unless you have configured AWS credentials and an SES-verified sender.
 
@@ -128,7 +133,8 @@ Protected routes require the `token` cookie created during signup or login.
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/chat/:targetUserId` | Fetch conversation history |
+| GET | `/chat/:targetUserId` | Fetch authorized conversation history |
+| GET | `/video/ice` | Fetch ICE configuration for an authenticated active call |
 | POST | `/payment/create` | Create a membership payment order |
 | POST | `/payment/webhook` | Receive Razorpay payment events |
 | GET | `/premium/verify` | Check membership status |
@@ -175,14 +181,12 @@ Conversation rooms are derived from the two users’ IDs.
 
 This project is still being improved. The current implementation has a few items to address:
 
-- Use the same environment-based secret for JWT signing and verification.
 - Remove sensitive logs and exclude password hashes from API responses.
 - Repair password update validation and feed pagination.
-- Add socket authentication and conversation access checks.
 - Tighten payment event handling and webhook body verification.
 - Configure cookies, CORS, and the reminder job timezone for deployment.
 
-Amazon SES email delivery depends on the account’s verification and production-access status. No automated test suite is currently configured.
+Amazon SES email delivery depends on the account’s verification and production-access status. `npm test` runs the backend authentication, signaling, lifecycle and chat regression tests. Frontend tests and an optional isolated browser smoke test are documented in [VIDEO_CALLING.md](VIDEO_CALLING.md).
 
 ## Author
 

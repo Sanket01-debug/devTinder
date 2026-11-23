@@ -11,7 +11,7 @@ require("./utils/cronjob");
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: require("./config/origins")(),
     credentials: true,
   })
 );
@@ -32,9 +32,10 @@ app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
 app.use("/", chatRouter);
+app.use("/", require("./routes/video"));
 
 const server = http.createServer(app);
-initializeSocket(server);
+app.locals.videoCalls = initializeSocket(server).videoCalls;
 
 connectDB()
   .then(() => {
